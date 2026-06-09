@@ -1,0 +1,31 @@
+server:
+  port: 8081
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  # db
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ahuralearn?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 058524
+
+# mp log output
+logging:
+  level:
+    com.ahuralearn.common.mapper: debug
+
+# swagger
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs #v3 means OpenAPI 3 specification
+knife4j:
+  enable: true
+  setting:
+    language: en
+#    language: zh_cn
