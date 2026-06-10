@@ -29,3 +29,8 @@ knife4j:
   setting:
     language: en
 #    language: zh_cn
+ahuralearn:
+  oss:
+    default-avatar:
+    endpoint:
+    bucket-name:
