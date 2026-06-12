@@ -14,4 +14,14 @@ public class AliProperties {
     private String endpoint;
 
     private String bucketName;
+
+    private String accessKeyId;
+
+    private String accessKeySecret;
+
+    private String urlPrefix;
+
+    public String getDeafultAvatar() {
+        return this.urlPrefix + this.defaultAvatar;
+    }
 }

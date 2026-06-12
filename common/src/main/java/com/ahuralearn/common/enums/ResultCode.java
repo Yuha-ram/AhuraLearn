@@ -18,9 +18,12 @@ public enum ResultCode implements BaseEnum {
     // JWT
     TOKEN_EXPIRED(4011, "Token has expired"),
     TOKEN_INVALID(4012, "Token is invalid or malformed"),
-    ;
+    TOKEN_TYPE_ERROR(4013, "Invalid token type"),
 
     // Business
+    PARAM_MISSING(4111, "Missing required parameters")
+
+    ;
 
     private final Integer value;
     private final String desc;

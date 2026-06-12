@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,7 @@ public class JWTUtils {
     private static final String SIGN = "QRIH@EW#7";
 
     // generate jwt
-    public static String createToken(Map<String, Object> map) {
+    public static String createToken(Map<String, Object> map, Instant expireTime) {
         JWTCreator.Builder builder = JWT.create();
         if (map != null) {
             map.forEach((key, value) -> {
@@ -35,9 +34,7 @@ public class JWTUtils {
                 }
             });
         }
-        String token = builder.withExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES))
-                .sign(Algorithm.HMAC256(SIGN));
-        return token;
+        return builder.withExpiresAt(expireTime).sign(Algorithm.HMAC256(SIGN));
     }
 
     public static DecodedJWT verifyToken(String token) {

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-// 用来为业务分组和设置扫描路径
 public class Knife4jConfiguration {
 
     @Bean
@@ -23,11 +22,19 @@ public class Knife4jConfiguration {
     }
 
     @Bean
+    public GroupedOpenApi authApi() {
+        return GroupedOpenApi.builder()
+                .group("Auth Module")
+                .packagesToScan("com.ahuralearn.auth.controller")
+                .build();
+    }
+
+    @Bean
     public GroupedOpenApi userApi() {
         return GroupedOpenApi.builder()
-                .group("用户服务")
+                .group("User Module")
                 // 指定要扫描的 Controller 所在的包路径，请替换为你实际的包名
-                .packagesToScan("com.ahuralearn.featuretest.controller")
+                .packagesToScan("com.ahuralearn.user.controller")
                 // 也可以按路径匹配扫描，例如只扫描 /user/** 的接口
                 // .pathsToMatch("/user/**") 
                 .build();

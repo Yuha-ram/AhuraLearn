@@ -16,10 +16,16 @@
             <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
-
+        <!-- Auth Module -->
         <dependency>
             <groupId>com.ahuralearn</groupId>
-            <artifactId>feature-test</artifactId>
+            <artifactId>auth</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- User Module -->
+        <dependency>
+            <groupId>com.ahuralearn</groupId>
+            <artifactId>user</artifactId>
             <version>1.0.0</version>
         </dependency>
 
