@@ -16,7 +16,8 @@
     <modules>
         <module>common</module>
         <module>start</module>
-        <module>feature-test</module>
+        <module>user</module>
+        <module>auth</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -29,8 +30,13 @@
         <swagger.version>4.4.0</swagger.version>
         <swagger-webmvc.version>2.7.0</swagger-webmvc.version>
         <jwt.version>4.4.0</jwt.version>
-
         <hutool.version>5.7.17</hutool.version>
+        <ali-oss.version>3.17.4</ali-oss.version>
+        <ali-oss-minor1.version>2.3.1</ali-oss-minor1.version>
+        <ali-oss-minor2.version>1.1.1</ali-oss-minor2.version>
+        <ali-oss-minor3.version>2.3.3</ali-oss-minor3.version>
+
+
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -65,6 +71,29 @@
                 <groupId>com.auth0</groupId>
                 <artifactId>java-jwt</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+
+            <!-- Ali OSS -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${ali-oss.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${ali-oss-minor1.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${ali-oss-minor2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${ali-oss-minor3.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

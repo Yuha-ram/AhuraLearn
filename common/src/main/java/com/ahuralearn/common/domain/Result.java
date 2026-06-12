@@ -26,10 +26,20 @@ public class Result<T> {
         );
     }
 
+    // by enum
     public static <T> Result<T> error(ResultCode resultCode) {
         return new Result<>(
                 resultCode.getValue(),
                 resultCode.getDesc(),
+                null
+        );
+    }
+
+    // custom
+    public static <T> Result<T> error(Integer code, String message) {
+        return new Result<>(
+                code,
+                message,
                 null
         );
     }
@@ -42,5 +52,4 @@ public class Result<T> {
         this.msg = msg;
         this.data = data;
     }
-
 }
