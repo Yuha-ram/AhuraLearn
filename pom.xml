@@ -18,6 +18,7 @@
         <module>start</module>
         <module>user</module>
         <module>auth</module>
+        <module>cms</module>
     </modules>
 
     <packaging>pom</packaging>

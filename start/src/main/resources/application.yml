@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/ahuralearn?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: 058524
-#    todo 视频上传的时候需注意 可能调整
+  #    todo 视频上传的时候需注意 可能调整
   servlet:
     multipart:
       max-request-size: 200MB
