@@ -29,7 +29,7 @@ public class OssServiceTest {
         // ==========================================
         // Windows 路径示例: "C:\\Users\\YourName\\Desktop\\test.jpg"
         // Mac/Linux 路径示例: "/Users/YourName/Desktop/test.jpg"
-        String localFilePath = "C:\\Users\\Yorina\\Downloads\\banner4-2.png";
+        String localFilePath = "C:\\Users\\Yorina\\Downloads\\GitHub_Essentials_Advanced_Metho…_202606142251.jpeg";
         File file = new File(localFilePath);
 
         // 防御性编程：检查文件是否存在
@@ -44,8 +44,8 @@ public class OssServiceTest {
         // ==========================================
         // 获取文件后缀 (例如: .jpg)
         String suffix = localFilePath.substring(localFilePath.lastIndexOf("."));
-        // 生成唯一文件名，建议加上目录前缀，例如: user/avatar/uuid.jpg
-        String objectName = "cms/banners/" + UUID.randomUUID().toString() + suffix;
+        // 生成唯一文件名，建议加上目录前缀，例如: course/coverImage/uuid.jpg
+        String objectName = "course/coverImage/" + UUID.randomUUID().toString() + suffix;
 
         System.out.println("🚀 开始上传...");
         System.out.println("本地文件: " + file.getAbsolutePath());

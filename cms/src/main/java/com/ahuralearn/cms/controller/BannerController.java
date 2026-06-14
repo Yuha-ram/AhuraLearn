@@ -4,6 +4,7 @@ package com.ahuralearn.cms.controller;
 import com.ahuralearn.cms.domain.vo.BannerVO;
 import com.ahuralearn.cms.service.IBannerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/cms/banners")
 @RequiredArgsConstructor
+@Tag(name = "bannerController")
 public class BannerController {
 
     private final IBannerService bannerService;

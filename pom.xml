@@ -19,6 +19,7 @@
         <module>user</module>
         <module>auth</module>
         <module>cms</module>
+        <module>course</module>
     </modules>
 
     <packaging>pom</packaging>
