@@ -13,7 +13,6 @@ import com.ahuralearn.course.mapper.CourseMapper;
 import com.ahuralearn.course.service.ICourseService;
 import com.ahuralearn.course.service.IInstructorService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
@@ -35,16 +34,35 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements ICourseService {
 
+    private static final int HOME_PAGE_COURSE_LIMIT = 8;
+
     private final IInstructorService instructorService;
 
     @Override
     public List<CourseBasicInfoVO> getTrendingCourses() {
-        return getCoursesBasicInfo(1, 8, true, Course::getEnrolledCount, Course::getRating);
+        // 1.construct the wrapper and page
+        LambdaQueryWrapper<Course> wrapper = new LambdaQueryWrapper<>();
+        LocalDateTime now = LocalDateTime.now();
+        wrapper.eq(Course::getStatus, CourseStatus.PUBLISHED) // make sure the course is available
+                .ge(Course::getCreateTime, now.minusMonths(1L)) // get the courses from the last month
+                .orderByDesc(Course::getEnrolledCount, Course::getRating);
+
+        Page<Course> page = new Page<>(1, HOME_PAGE_COURSE_LIMIT, false);
+
+        // 2.get data
+        return buildCoursePageVO(page, wrapper).getList();
     }
 
     @Override
     public List<CourseBasicInfoVO> getNewCourses() {
-        return getCoursesBasicInfo(1, 8, false, Course::getCreateTime, Course::getRating);
+        // 1.construct the wrapper and page
+        LambdaQueryWrapper<Course> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Course::getStatus, CourseStatus.PUBLISHED) // make sure the course is available
+                .orderByDesc(Course::getCreateTime, Course::getRating);
+
+        Page<Course> page = new Page<>(1, HOME_PAGE_COURSE_LIMIT, false);
+        // 2.get data
+        return buildCoursePageVO(page, wrapper).getList();
     }
 
     @Override
@@ -85,10 +103,16 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             wrapper.orderByDesc(Course::getEnrolledCount, Course::getRating);
         }
 
-        Page<Course> page = this.page(new Page<>(query.getPageNo(), query.getPageSize()), wrapper);
-        List<Course> list = page.getRecords();
+        Page<Course> page = new Page<>(query.getPageNo(), query.getPageSize());
+        return buildCoursePageVO(page, wrapper);
+    }
+
+    // obtain courses data
+    private PageVO<CourseBasicInfoVO> buildCoursePageVO(Page<Course> page, LambdaQueryWrapper<Course> wrapper) {
+        Page<Course> coursePage = this.page(page, wrapper);
+        List<Course> list = coursePage.getRecords();
         if (CollUtils.isEmpty(list))
-            return PageVO.empty(page);
+            return PageVO.empty(coursePage);
 
         // get the instructor ids
         Set<Long> instructorIds = list.stream().map(Course::getInstructorId).collect(Collectors.toSet());
@@ -106,37 +130,6 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
             vos.add(vo);
         }
-        return PageVO.of(page, vos);
+        return PageVO.of(coursePage, vos);
     }
-
-    private List<CourseBasicInfoVO> getCoursesBasicInfo(long pageNum, long pageSize, boolean forTrending, SFunction<Course, ?>... orderItems) {
-        LocalDateTime now = LocalDateTime.now();
-        Page<Course> page = lambdaQuery()
-                .eq(Course::getStatus, CourseStatus.PUBLISHED) // make sure the course is available
-                .ge(forTrending, Course::getCreateTime, now.minusMonths(1L)) // get the courses from the last month
-                .orderByDesc(Arrays.asList(orderItems))
-                .page(new Page<>(pageNum, pageSize, false));
-        List<Course> list = page.getRecords();
-        if (CollUtils.isEmpty(list))
-            return CollUtils.emptyList();
-
-        // get the instructor ids
-        Set<Long> instructorIds = list.stream().map(Course::getInstructorId).collect(Collectors.toSet());
-
-        // shift the instructor id to instructor name
-        Map<Long, String> instructorMap = instructorService.getInstructorNamesByIds(instructorIds);
-
-        // iterate the list to get vo
-        List<CourseBasicInfoVO> vos = new ArrayList<>(list.size());
-        for (Course course : list) {
-            CourseBasicInfoVO vo = BeanUtils.copyBean(course, CourseBasicInfoVO.class);
-            // special handling for the instructorName field
-            vo.setInstructorName(instructorMap.getOrDefault(course.getInstructorId(),
-                    "Instructor not detected"));
-
-            vos.add(vo);
-        }
-        return vos;
-    }
-
 }
