@@ -56,6 +56,14 @@ public class Knife4jConfiguration {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi learningApi() {
+        return GroupedOpenApi.builder()
+                .group("Learning Module")
+                .packagesToScan("com.ahuralearn.learning.controller")
+                .build();
+    }
+
     // 如果后续 AhuraLearn 增加了“AI问答服务”，可以再加一个 Bean 分组：
     // @Bean
     // public GroupedOpenApi aiApi() {

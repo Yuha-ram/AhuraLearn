@@ -1,7 +1,9 @@
 package com.ahuralearn.course.service.impl;
 
+import com.ahuralearn.common.utils.BeanUtils;
 import com.ahuralearn.common.utils.CollUtils;
 import com.ahuralearn.course.domain.po.Instructor;
+import com.ahuralearn.course.domain.vo.InstructorVO;
 import com.ahuralearn.course.mapper.InstructorMapper;
 import com.ahuralearn.course.service.IInstructorService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -35,5 +37,15 @@ public class InstructorServiceImpl extends ServiceImpl<InstructorMapper, Instruc
             return CollUtils.emptyMap();
 
         return list.stream().collect(Collectors.toMap(Instructor::getId, Instructor::getName));
+    }
+
+    @Override
+    public InstructorVO getInstructorVOById(Long instructorId) {
+        Instructor instructor = getById(instructorId);
+        InstructorVO instructorVO = null;
+        if (instructor != null) {
+            instructorVO = BeanUtils.copyBean(instructor, InstructorVO.class);
+        }
+        return instructorVO;
     }
 }

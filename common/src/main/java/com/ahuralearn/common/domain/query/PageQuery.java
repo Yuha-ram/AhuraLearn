@@ -1,14 +1,11 @@
 package com.ahuralearn.common.domain.query;
 
-import com.ahuralearn.common.utils.CollUtils;
 import com.ahuralearn.common.utils.StringUtils;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data

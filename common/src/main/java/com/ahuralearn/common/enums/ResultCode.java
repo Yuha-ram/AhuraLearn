@@ -21,8 +21,11 @@ public enum ResultCode implements BaseEnum {
     TOKEN_TYPE_ERROR(4013, "Invalid token type"),
 
     // Business
-    PARAM_MISSING(4111, "Missing required parameters")
+    PARAM_MISSING(4111, "Missing required parameters"),
 
+    // DB
+    DUPLICATE_RESOURCE(4201, "Operation too frequent or data already exists"),
+    DB_FAILED(4202, "Database operation failed"),
     ;
 
     private final Integer value;
