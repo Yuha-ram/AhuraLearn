@@ -1,6 +1,7 @@
 package com.ahuralearn.course.service;
 
 import com.ahuralearn.course.domain.po.Instructor;
+import com.ahuralearn.course.domain.vo.InstructorVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -18,5 +19,7 @@ import java.util.Set;
 public interface IInstructorService extends IService<Instructor> {
 
     Map<Long,String> getInstructorNamesByIds(Set<Long> instructorIds);
+
+    InstructorVO getInstructorVOById(Long instructorId);
 
 }

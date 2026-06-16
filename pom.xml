@@ -20,6 +20,7 @@
         <module>auth</module>
         <module>cms</module>
         <module>course</module>
+        <module>learning</module>
     </modules>
 
     <packaging>pom</packaging>

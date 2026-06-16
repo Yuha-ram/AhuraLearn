@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 // Global Exception Handler
 @RestControllerAdvice
@@ -77,6 +79,20 @@ public class GlobalExceptionHandler {
         }
         log.warn(errorMsg);
         return Result.error(ResultCode.PARAM_MISSING);
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Result<Void> handleDuplicateKeyException(DuplicateKeyException e) {
+        // it's usually user behavior (clicking too fast)
+        log.warn("Duplicate key exception caught: {}", e.getMessage());
+        return Result.error(ResultCode.DUPLICATE_RESOURCE);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public Result<Void> handleDataAccessException(DataAccessException e) {
+        // true system/DB failure
+        log.error("Severe database operation exception: ", e);
+        return Result.error(ResultCode.DB_FAILED);
     }
 
     @ExceptionHandler(Exception.class)

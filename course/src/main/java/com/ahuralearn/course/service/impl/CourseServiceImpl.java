@@ -1,17 +1,20 @@
 package com.ahuralearn.course.service.impl;
 
 import com.ahuralearn.common.domain.vo.PageVO;
+import com.ahuralearn.common.enums.ResultCode;
+import com.ahuralearn.common.exceptions.BusinessException;
 import com.ahuralearn.common.utils.BeanUtils;
 import com.ahuralearn.common.utils.CollUtils;
 import com.ahuralearn.common.utils.StringUtils;
+import com.ahuralearn.common.utils.TimeUtils;
 import com.ahuralearn.course.domain.po.Course;
+import com.ahuralearn.course.domain.po.CourseSection;
 import com.ahuralearn.course.domain.query.CoursePageQuery;
-import com.ahuralearn.course.domain.vo.CourseBasicInfoVO;
+import com.ahuralearn.course.domain.vo.*;
 import com.ahuralearn.course.enums.CourseStatus;
 import com.ahuralearn.course.enums.DifficultyLevel;
 import com.ahuralearn.course.mapper.CourseMapper;
-import com.ahuralearn.course.service.ICourseService;
-import com.ahuralearn.course.service.IInstructorService;
+import com.ahuralearn.course.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -37,6 +40,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private static final int HOME_PAGE_COURSE_LIMIT = 8;
 
     private final IInstructorService instructorService;
+    private final ICategoryService categoryService;
+    private final ICourseChapterService chapterService;
+    private final ICourseSectionService sectionService;
 
     @Override
     public List<CourseBasicInfoVO> getTrendingCourses() {
@@ -131,5 +137,64 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             vos.add(vo);
         }
         return PageVO.of(coursePage, vos);
+    }
+
+    @Override
+    public CourseFullInfoVO getCourseDetail(Long courseId) {
+        if (courseId == null)
+            throw new BusinessException(ResultCode.PARAM_MISSING);
+
+        // 1.get the course by id
+        Course course = getById(courseId);
+        if (course == null)
+            throw new BusinessException("Course not found");
+        if (course.getStatus() != CourseStatus.PUBLISHED)
+            throw new BusinessException("Course is not available");
+
+        // 2.Special handling for instructor field
+        Long instructorId = course.getInstructorId();
+        InstructorVO instructorVO = instructorService.getInstructorVOById(instructorId);
+
+        // 3.Special handling for category field
+        Long categoryId = course.getCategoryId();
+        String categoryName = categoryService.getCategoryNameById(categoryId);
+
+        // 4.encapsulate to VO
+        CourseFullInfoVO vo = BeanUtils.copyBean(course, CourseFullInfoVO.class);
+        vo.setInstructor(instructorVO);
+        vo.setCategoryName(categoryName);
+        return vo;
+    }
+
+    @Override
+    public CourseSyllabusVO getSyllabus(Long courseId) {
+        if (courseId == null)
+            throw new BusinessException(ResultCode.PARAM_MISSING);
+
+        // 1.Query chapters, lacking section list
+        List<ChapterVO> chapters = chapterService.getChaptersByCourseId(courseId);
+        if (CollUtils.isEmpty(chapters)) // return empty list
+            return new CourseSyllabusVO(CollUtils.emptyList());
+
+        // 2.Query sections
+        // key is chapterId, val is the series of sections within this chapter
+        Map<Long, List<CourseSection>> sectionMap = sectionService.getSectionsByCourseId(courseId);
+
+        // 3.Assemble vo
+        for (ChapterVO chapter : chapters) {
+            Long chapterId = chapter.getId();
+            List<CourseSection> sectionList = sectionMap.getOrDefault(chapterId, CollUtils.emptyList());
+
+            if (CollUtils.isNotEmpty(sectionList)) {
+                List<SectionVO> sections = BeanUtils.copyList(sectionList, SectionVO.class);
+                // Format duration for each section/video (e.g., 4:12)
+                sections.forEach(s -> s.setDurationFormat(TimeUtils.formatTime(s.getDuration())));
+                chapter.setSections(sections);
+            } else {
+                chapter.setSections(CollUtils.emptyList());
+            }
+        }
+
+        return new CourseSyllabusVO(chapters);
     }
 }
