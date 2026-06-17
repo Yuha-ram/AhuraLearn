@@ -6,12 +6,15 @@ import com.ahuralearn.common.exceptions.BusinessException;
 import com.ahuralearn.common.utils.BeanUtils;
 import com.ahuralearn.common.utils.StringUtils;
 import com.ahuralearn.common.utils.UserContext;
+import com.ahuralearn.learning.domain.po.LearningLesson;
+import com.ahuralearn.learning.service.ILearningLessonService;
 import com.ahuralearn.user.domain.po.User;
 import com.ahuralearn.user.domain.vo.UserSimpleInfoVO;
 import com.ahuralearn.user.enums.UserStatus;
 import com.ahuralearn.user.mapper.UserMapper;
 import com.ahuralearn.user.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,7 +26,10 @@ import org.springframework.stereotype.Service;
  * @since 2026-06-10
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+
+    private final ILearningLessonService lessonService;
 
     @Override
     public User queryByUsernameAndPwd(String name, String pwd) {
@@ -85,7 +91,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         UserSimpleInfoVO vo = BeanUtils.copyBean(user, UserSimpleInfoVO.class);
         //TODO 记得写好learning表后 回来完善该业务: 还需将userId作为参数查询已报名的课程
-
+        Long enrolledCourses = lessonService.lambdaQuery()
+                .eq(LearningLesson::getUserId, userId)
+                .count();
+        vo.setEnrolledCourses(enrolledCourses != null ? enrolledCourses.intValue() : 0);
         return vo;
     }
 }

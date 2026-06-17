@@ -197,4 +197,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
         return new CourseSyllabusVO(chapters);
     }
+
+    @Override
+    public CoursePlayDetailsVO getCoursePlayDetails(Long courseId, Long sectionId) {
+        return null;
+    }
 }

@@ -1,9 +1,11 @@
 package com.ahuralearn.learning.controller;
 
 
+import com.ahuralearn.learning.domain.vo.CourseLearningProgressVO;
 import com.ahuralearn.learning.domain.vo.EnrollmentStatusVO;
 import com.ahuralearn.learning.service.ILearningLessonService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +36,15 @@ public class LearningLessonController {
     @PostMapping("/{courseId}/enrollment")
     public void enrollCourse(@PathVariable("courseId") Long courseId) {
         lessonService.enrollCourse(courseId);
+    }
+
+    @Operation(summary = "Get learning progress")
+    @GetMapping("/{courseId}/progress")
+    public CourseLearningProgressVO getPlaybackProgress(
+            @PathVariable("courseId") Long courseId,
+            @Schema(description = "Current playing sectionId", required = true)
+            @RequestParam("sectionId") Long sectionId) {
+        //TODO 需要先定义出learning_record表的结构
+        return lessonService.getPlaybackProgress(courseId, sectionId);
     }
 }

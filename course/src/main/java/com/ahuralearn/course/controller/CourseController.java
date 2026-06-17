@@ -5,6 +5,7 @@ import com.ahuralearn.common.domain.vo.PageVO;
 import com.ahuralearn.course.domain.query.CoursePageQuery;
 import com.ahuralearn.course.domain.vo.CourseBasicInfoVO;
 import com.ahuralearn.course.domain.vo.CourseFullInfoVO;
+import com.ahuralearn.course.domain.vo.CoursePlayDetailsVO;
 import com.ahuralearn.course.domain.vo.CourseSyllabusVO;
 import com.ahuralearn.course.service.ICourseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,5 +60,13 @@ public class CourseController {
     @GetMapping("/{courseId}/syllabus")
     public CourseSyllabusVO getSyllabus(@PathVariable("courseId") Long courseId) {
         return courseService.getSyllabus(courseId);
+    }
+
+    @Operation(summary = "Get course playback info")
+    @GetMapping("/{courseId}/playback/{sectionId}")
+    public CoursePlayDetailsVO getCoursePlayDetails(@PathVariable("courseId") Long courseId,
+                                                    @PathVariable("sectionId") Long sectionId) {
+
+        return courseService.getCoursePlayDetails(courseId, sectionId);
     }
 }

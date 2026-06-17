@@ -1,6 +1,7 @@
 package com.ahuralearn.learning.service;
 
 import com.ahuralearn.learning.domain.po.LearningLesson;
+import com.ahuralearn.learning.domain.vo.CourseLearningProgressVO;
 import com.ahuralearn.learning.domain.vo.EnrollmentStatusVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,4 +18,6 @@ public interface ILearningLessonService extends IService<LearningLesson> {
     EnrollmentStatusVO getEnrollmentStatus(Long courseId);
 
     void enrollCourse(Long courseId);
+
+    CourseLearningProgressVO getPlaybackProgress(Long courseId, Long sectionId);
 }

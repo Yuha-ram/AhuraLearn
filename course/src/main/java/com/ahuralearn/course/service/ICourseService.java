@@ -5,6 +5,7 @@ import com.ahuralearn.course.domain.po.Course;
 import com.ahuralearn.course.domain.query.CoursePageQuery;
 import com.ahuralearn.course.domain.vo.CourseBasicInfoVO;
 import com.ahuralearn.course.domain.vo.CourseFullInfoVO;
+import com.ahuralearn.course.domain.vo.CoursePlayDetailsVO;
 import com.ahuralearn.course.domain.vo.CourseSyllabusVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,4 +30,6 @@ public interface ICourseService extends IService<Course> {
     CourseFullInfoVO getCourseDetail(Long courseId);
 
     CourseSyllabusVO getSyllabus(Long courseId);
+
+    CoursePlayDetailsVO getCoursePlayDetails(Long courseId, Long sectionId);
 }

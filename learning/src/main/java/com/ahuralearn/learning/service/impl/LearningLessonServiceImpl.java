@@ -6,6 +6,7 @@ import com.ahuralearn.common.utils.UserContext;
 import com.ahuralearn.course.domain.po.Course;
 import com.ahuralearn.course.service.ICourseService;
 import com.ahuralearn.learning.domain.po.LearningLesson;
+import com.ahuralearn.learning.domain.vo.CourseLearningProgressVO;
 import com.ahuralearn.learning.domain.vo.EnrollmentStatusVO;
 import com.ahuralearn.learning.enums.LearningStatus;
 import com.ahuralearn.learning.mapper.LearningLessonMapper;
@@ -74,5 +75,10 @@ public class LearningLessonServiceImpl extends ServiceImpl<LearningLessonMapper,
                 .setSql("enrolled_count = enrolled_count + 1")
                 .eq(Course::getId, courseId)
                 .update();
+    }
+
+    @Override
+    public CourseLearningProgressVO getPlaybackProgress(Long courseId, Long sectionId) {
+        return null;
     }
 }
