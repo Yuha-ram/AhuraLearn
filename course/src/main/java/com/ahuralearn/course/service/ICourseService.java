@@ -32,4 +32,6 @@ public interface ICourseService extends IService<Course> {
     CourseSyllabusVO getSyllabus(Long courseId);
 
     CoursePlayDetailsVO getCoursePlayDetails(Long courseId, Long sectionId);
+
+    String getPlaybackUrl(Long courseId, Long sectionId);
 }

@@ -1,4 +1,4 @@
-package com.ahuralearn.common.config.cloud;
+package com.ahuralearn.media.config.cloud;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

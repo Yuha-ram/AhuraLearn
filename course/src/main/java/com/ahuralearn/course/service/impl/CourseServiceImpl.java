@@ -15,12 +15,15 @@ import com.ahuralearn.course.enums.CourseStatus;
 import com.ahuralearn.course.enums.DifficultyLevel;
 import com.ahuralearn.course.mapper.CourseMapper;
 import com.ahuralearn.course.service.*;
+import com.ahuralearn.media.service.IMediaService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,6 +46,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private final ICategoryService categoryService;
     private final ICourseChapterService chapterService;
     private final ICourseSectionService sectionService;
+    private final IMediaService mediaService;
 
     @Override
     public List<CourseBasicInfoVO> getTrendingCourses() {
@@ -200,6 +204,66 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Override
     public CoursePlayDetailsVO getCoursePlayDetails(Long courseId, Long sectionId) {
-        return null;
+        // 1.params validation
+        if (courseId == null || sectionId == null)
+            throw new BusinessException(ResultCode.PARAM_MISSING);
+
+        Course course = getById(courseId);
+        if (course == null) // invalid course
+            throw new BusinessException("Course is not found");
+
+        // 2.query chapters & sections
+        List<ChapterVO> chapters = chapterService.getChaptersByCourseId(courseId);
+        if (CollUtils.isNotEmpty(chapters)) {
+            Map<Long, List<CourseSection>> sectionMap = sectionService.getSectionsByCourseId(courseId);
+            for (ChapterVO chapter : chapters) {
+                List<CourseSection> sectionList = sectionMap.getOrDefault(chapter.getId(), CollUtils.emptyList());
+                if (CollUtils.isNotEmpty(sectionList)) {
+                    List<SectionVO> sections = BeanUtils.copyList(sectionList, SectionVO.class);
+                    sections.forEach(s -> s.setDurationFormat(TimeUtils.formatTime(s.getDuration())));
+                    chapter.setSections(sections);
+                } else {
+                    chapter.setSections(CollUtils.emptyList());
+                }
+            }
+        }
+        // 3.retrieve instructor details
+        InstructorVO instructor = instructorService.getInstructorVOById(course.getInstructorId());
+        // 4.retrieve current section info
+        SectionBasicVO currSection = sectionService.getSectionInfoForPlayback(courseId, sectionId);
+        // 5.assemble vo
+        CoursePlayDetailsVO vo = new CoursePlayDetailsVO();
+        vo.setChapters(chapters);
+        vo.setInstructor(instructor);
+        vo.setCurrentSection(currSection);
+        return vo;
+    }
+
+    @Override
+    public String getPlaybackUrl(Long courseId, Long sectionId) {
+        // 1.params validation
+        if (courseId == null || sectionId == null)
+            throw new BusinessException(ResultCode.PARAM_MISSING);
+
+        // 2.validate section
+        CourseSection section = sectionService.getById(sectionId);
+        if (section == null || !section.getCourseId().equals(courseId))
+            throw new BusinessException("Invalid section access");
+
+        // 3.generate pre-signed url for security
+        String videoUrl = section.getVideoUrl();
+        if (StringUtils.isBlank(videoUrl))
+            throw new BusinessException("No video resources available for this section");
+
+        try {
+            // get relative path
+            URL url = new URL(videoUrl);
+            String objectKey = url.getPath().substring(1);
+            // 2 hours later will expire
+            Date expiration = new Date(System.currentTimeMillis() + 2 * 3600 * 1000L);
+            return mediaService.generateSignedUrl(objectKey, expiration);
+        } catch (MalformedURLException e) {
+            throw new BusinessException("Invalid video URL format stored in database");
+        }
     }
 }

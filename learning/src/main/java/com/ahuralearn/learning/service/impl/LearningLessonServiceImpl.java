@@ -2,19 +2,26 @@ package com.ahuralearn.learning.service.impl;
 
 import com.ahuralearn.common.enums.ResultCode;
 import com.ahuralearn.common.exceptions.BusinessException;
+import com.ahuralearn.common.utils.CollUtils;
 import com.ahuralearn.common.utils.UserContext;
 import com.ahuralearn.course.domain.po.Course;
 import com.ahuralearn.course.service.ICourseService;
 import com.ahuralearn.learning.domain.po.LearningLesson;
+import com.ahuralearn.learning.domain.po.LearningRecord;
 import com.ahuralearn.learning.domain.vo.CourseLearningProgressVO;
 import com.ahuralearn.learning.domain.vo.EnrollmentStatusVO;
 import com.ahuralearn.learning.enums.LearningStatus;
 import com.ahuralearn.learning.mapper.LearningLessonMapper;
 import com.ahuralearn.learning.service.ILearningLessonService;
+import com.ahuralearn.learning.service.ILearningRecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -29,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LearningLessonServiceImpl extends ServiceImpl<LearningLessonMapper, LearningLesson> implements ILearningLessonService {
 
     private final ICourseService courseService;
+    private final ILearningRecordService recordService;
 
     @Override
     public EnrollmentStatusVO getEnrollmentStatus(Long courseId) {
@@ -79,6 +87,31 @@ public class LearningLessonServiceImpl extends ServiceImpl<LearningLessonMapper,
 
     @Override
     public CourseLearningProgressVO getPlaybackProgress(Long courseId, Long sectionId) {
-        return null;
+        // params validation
+        if (courseId == null || sectionId == null)
+            throw new BusinessException(ResultCode.PARAM_MISSING);
+
+        // 1.get lessonId to support query the rest business
+        Long userId = UserContext.getUser();
+        LearningLesson lesson = lambdaQuery()
+                .select(LearningLesson::getId)
+                .eq(LearningLesson::getUserId, userId)
+                .eq(LearningLesson::getCourseId, courseId)
+                .one();
+        if (lesson == null)
+            throw new BusinessException("You haven't enrolled this course");
+
+        Long lessonId = lesson.getId();
+        // 2.get all completed section id for this course
+        Set<Long> completedSecIds = recordService.getCompletedSectionIds(lessonId);
+
+        // 3.get current section's playback moment (Defaults to 0 if no record exists)
+        Integer moment = recordService.getSectionMoment(lessonId, sectionId);
+
+        // assemble vo
+        CourseLearningProgressVO vo = new CourseLearningProgressVO();
+        vo.setCompletedSectionIds(completedSecIds);
+        vo.setMoment(moment);
+        return vo;
     }
 }

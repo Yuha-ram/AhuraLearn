@@ -69,4 +69,11 @@ public class CourseController {
 
         return courseService.getCoursePlayDetails(courseId, sectionId);
     }
+
+    @Operation(summary = "Get current section video")
+    @GetMapping("/{courseId}/sections/{sectionId}/play-url")
+    public String getPlaybackUrl(@PathVariable("courseId") Long courseId,
+                                 @PathVariable("sectionId") Long sectionId) {
+        return courseService.getPlaybackUrl(courseId, sectionId);
+    }
 }
