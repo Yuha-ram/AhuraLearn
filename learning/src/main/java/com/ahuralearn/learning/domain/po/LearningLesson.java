@@ -43,7 +43,7 @@ public class LearningLesson implements Serializable {
     private Long userId;
 
     /**
-     * Learning status: 0-Not Enrolled, 1-In Progress, 2-Completed
+     * Learning status: 1-In Progress, 2-Completed
      */
     private LearningStatus status;
 

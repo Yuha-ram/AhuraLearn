@@ -1,4 +1,4 @@
-package com.ahuralearn.common.config.cloud;
+package com.ahuralearn.media.config.cloud;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;

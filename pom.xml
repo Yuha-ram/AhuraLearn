@@ -21,6 +21,7 @@
         <module>cms</module>
         <module>course</module>
         <module>learning</module>
+        <module>media</module>
     </modules>
 
     <packaging>pom</packaging>

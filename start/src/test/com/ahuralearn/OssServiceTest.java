@@ -1,6 +1,6 @@
 package com.ahuralearn;
 
-import com.ahuralearn.common.config.cloud.AliProperties;
+import com.ahuralearn.media.config.cloud.AliProperties;
 import com.aliyun.oss.OSS;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

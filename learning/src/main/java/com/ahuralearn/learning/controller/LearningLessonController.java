@@ -41,10 +41,10 @@ public class LearningLessonController {
     @Operation(summary = "Get learning progress")
     @GetMapping("/{courseId}/progress")
     public CourseLearningProgressVO getPlaybackProgress(
-            @PathVariable("courseId") Long courseId,
+            @PathVariable("courseId") Long courseId, // support query for lessonId
             @Schema(description = "Current playing sectionId", required = true)
             @RequestParam("sectionId") Long sectionId) {
-        //TODO 需要先定义出learning_record表的结构
+
         return lessonService.getPlaybackProgress(courseId, sectionId);
     }
 }
