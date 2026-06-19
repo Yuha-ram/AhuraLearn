@@ -1,5 +1,6 @@
 package com.ahuralearn.learning.service;
 
+import com.ahuralearn.learning.domain.dto.LearningRecordFormDTO;
 import com.ahuralearn.learning.domain.po.LearningRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,4 +19,6 @@ public interface ILearningRecordService extends IService<LearningRecord> {
     Set<Long> getCompletedSectionIds(Long lessonId);
 
     Integer getSectionMoment(Long lessonId, Long sectionId);
+
+    void addLearningRecord(LearningRecordFormDTO formDTO);
 }
