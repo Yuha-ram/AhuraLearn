@@ -90,7 +90,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new BusinessException("User does not exist");
 
         UserSimpleInfoVO vo = BeanUtils.copyBean(user, UserSimpleInfoVO.class);
-        //TODO 记得写好learning表后 回来完善该业务: 还需将userId作为参数查询已报名的课程
         Long enrolledCourses = lessonService.lambdaQuery()
                 .eq(LearningLesson::getUserId, userId)
                 .count();
