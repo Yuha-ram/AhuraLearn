@@ -66,7 +66,7 @@ public class LearningRecordServiceImpl extends ServiceImpl<LearningRecordMapper,
 
     @Override
     @Transactional
-    public void addLearningRecord(LearningRecordFormDTO formDTO) {
+    public Boolean addLearningRecord(LearningRecordFormDTO formDTO) {
         // 1.params validation
         if (formDTO == null)
             throw new BusinessException(ResultCode.PARAM_MISSING);
@@ -86,6 +86,8 @@ public class LearningRecordServiceImpl extends ServiceImpl<LearningRecordMapper,
         boolean firstFinish = handleVideoRecord(userId, lesson.getId(), duration, formDTO);
         // 5.update learning lesson
         handleLearningLesson(firstFinish, lesson, formDTO);
+
+        return firstFinish;
     }
 
     private CourseSection validateSection(Long sectionId, Long courseId) {

@@ -20,5 +20,5 @@ public interface ILearningRecordService extends IService<LearningRecord> {
 
     Integer getSectionMoment(Long lessonId, Long sectionId);
 
-    void addLearningRecord(LearningRecordFormDTO formDTO);
+    Boolean addLearningRecord(LearningRecordFormDTO formDTO);
 }

@@ -31,10 +31,14 @@ public class LearningRecordController {
 
     private final ILearningRecordService recordService;
 
+    /**
+     * @param formDTO learning record
+     * @return whether the first time to finish
+     */
     @Operation(summary = "Submit learning record")
     @PostMapping
-    public void addLearningRecord(@RequestBody @Validated LearningRecordFormDTO formDTO) {
-        recordService.addLearningRecord(formDTO);
+    public Boolean addLearningRecord(@RequestBody @Validated LearningRecordFormDTO formDTO) {
+        return recordService.addLearningRecord(formDTO);
     }
 
 }

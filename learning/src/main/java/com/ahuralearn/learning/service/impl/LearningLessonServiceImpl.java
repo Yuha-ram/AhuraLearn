@@ -2,12 +2,10 @@ package com.ahuralearn.learning.service.impl;
 
 import com.ahuralearn.common.enums.ResultCode;
 import com.ahuralearn.common.exceptions.BusinessException;
-import com.ahuralearn.common.utils.CollUtils;
 import com.ahuralearn.common.utils.UserContext;
 import com.ahuralearn.course.domain.po.Course;
 import com.ahuralearn.course.service.ICourseService;
 import com.ahuralearn.learning.domain.po.LearningLesson;
-import com.ahuralearn.learning.domain.po.LearningRecord;
 import com.ahuralearn.learning.domain.vo.CourseLearningProgressVO;
 import com.ahuralearn.learning.domain.vo.EnrollmentStatusVO;
 import com.ahuralearn.learning.enums.LearningStatus;
@@ -19,9 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>

@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @Schema(description = "Chapter Section")
 public class SectionVO {
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class) // Avoid loss of precision in JS Number
     private Long id;
     private String title;
     private Integer duration;

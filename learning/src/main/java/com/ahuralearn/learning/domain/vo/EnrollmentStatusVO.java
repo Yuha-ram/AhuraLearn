@@ -13,6 +13,6 @@ public class EnrollmentStatusVO {
 
     private Boolean enrolled;
 
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class) // Avoid loss of precision in JS Number
     private Long latestSectionId;
 }
