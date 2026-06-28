@@ -22,6 +22,7 @@
         <module>course</module>
         <module>learning</module>
         <module>media</module>
+        <module>ai</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -39,7 +40,6 @@
         <ali-oss-minor1.version>2.3.1</ali-oss-minor1.version>
         <ali-oss-minor2.version>1.1.1</ali-oss-minor2.version>
         <ali-oss-minor3.version>2.3.3</ali-oss-minor3.version>
-
 
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>

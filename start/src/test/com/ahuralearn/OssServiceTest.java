@@ -79,4 +79,9 @@ public class OssServiceTest {
             throw e; // 让测试标红
         }
     }
+
+    @Test
+    public void testVideo() throws Exception {
+        System.out.println(UUID.randomUUID().toString());
+    }
 }

@@ -1,6 +1,7 @@
 package com.ahuralearn.course.service;
 
 import com.ahuralearn.common.domain.vo.PageVO;
+import com.ahuralearn.course.domain.dto.CourseVectorDTO;
 import com.ahuralearn.course.domain.po.Course;
 import com.ahuralearn.course.domain.query.CoursePageQuery;
 import com.ahuralearn.course.domain.vo.CourseBasicInfoVO;
@@ -34,4 +35,6 @@ public interface ICourseService extends IService<Course> {
     CoursePlayDetailsVO getCoursePlayDetails(Long courseId, Long sectionId);
 
     String getPlaybackUrl(Long courseId, Long sectionId);
+
+    List<CourseVectorDTO> getCourseMetadata();
 }

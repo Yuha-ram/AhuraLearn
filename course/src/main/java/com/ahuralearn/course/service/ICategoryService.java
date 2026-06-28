@@ -3,6 +3,10 @@ package com.ahuralearn.course.service;
 import com.ahuralearn.course.domain.po.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * <p>
  * Course Category Table 服务类
@@ -13,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICategoryService extends IService<Category> {
     String getCategoryNameById(Long id);
+
+    Map<Long, String> getCategoryNamesByIds(Set<Long> ids);
 }
