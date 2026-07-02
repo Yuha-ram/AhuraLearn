@@ -54,10 +54,12 @@ public class CourseEmbeddingFormatter {
             int hours = dto.getHoursRequired();
             if (hours < 10) {
                 sb.append("A concise crash course, estimated to take ").append(hours).append(" hours to complete.\n");
-            } else if (hours <= 30) {
-                sb.append("A medium-length practical course, requiring approximately ").append(hours).append(" hours to complete.\n");
+            } else if (hours < 30) {
+                sb.append("A medium-length practical course, requiring approximately ").append(hours)
+                        .append(" hours to complete.\n");
             } else {
-                sb.append("A comprehensive and in-depth systematic course, requiring ").append(hours).append(" hours of immersive study.\n");
+                sb.append("A comprehensive and in-depth systematic course, requiring ").append(hours)
+                        .append(" hours of immersive study.\n");
             }
         }
 
@@ -70,8 +72,7 @@ public class CourseEmbeddingFormatter {
                 List<String> list = objectMapper.readValue(
                         dto.getOutcomes(),
                         new TypeReference<List<String>>() {
-                        }
-                );
+                        });
                 for (int i = 0; i < list.size(); i++) {
                     sb.append(i + 1).append(". ").append(list.get(i)).append("\n");
                 }

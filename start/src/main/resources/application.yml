@@ -51,3 +51,6 @@ langchain4j:
       embedding-model:
         model-name: text-embedding-v4
         api-key: # change to your own api key
+      streaming-chat-model:
+        model-name: qwen3.7-plus
+        api-key: # change to your own api key

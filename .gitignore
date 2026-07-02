@@ -57,3 +57,5 @@ hs_err_pid*
 
 ### Maven Extras ###
 .flattened-pom.xml
+
+AGENTS.md

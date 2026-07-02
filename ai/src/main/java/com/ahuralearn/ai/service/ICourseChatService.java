@@ -2,14 +2,15 @@ package com.ahuralearn.ai.service;
 
 import com.ahuralearn.ai.domain.dto.ChatRequestDTO;
 import com.ahuralearn.ai.domain.vo.ChatMessageVO;
-import com.ahuralearn.ai.domain.vo.ChatResponseVO;
 import com.ahuralearn.ai.domain.vo.ChatSessionVO;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
 public interface ICourseChatService {
 
-    ChatResponseVO chat(ChatRequestDTO request);
+//    ChatResponseVO chat(ChatRequestDTO request);
+    void chat(ChatRequestDTO request, SseEmitter emitter);
 
     /**
      * 获取当前用户的历史会话列表

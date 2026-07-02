@@ -19,7 +19,7 @@ public class MilvusConfig {
                 .port(19530)                               // Port for Milvus instance
                 .collectionName("ahuralearn_courses")      // Name of the collection
                 .dimension(1024)                            // Dimension of vectors
-                .indexType(IndexType.HNSW)                 // Index type
+                .indexType(IndexType.FLAT)                 // Index type (FLAT requires no extra parameters)
                 .metricType(MetricType.COSINE)             // Metric type
                 .consistencyLevel(ConsistencyLevelEnum.EVENTUALLY)  // Consistency level
                 .autoFlushOnInsert(true)                   // Auto flush after insert

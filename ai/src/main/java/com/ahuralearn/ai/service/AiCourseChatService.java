@@ -2,6 +2,7 @@ package com.ahuralearn.ai.service;
 
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.SystemMessage;
+import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.UserMessage;
 
 /**
@@ -32,5 +33,5 @@ public interface AiCourseChatService {
      * @return 大模型的回答文本
      */
     @SystemMessage(fromResource = "system-prompt.txt")
-    String chat(@MemoryId Long memoryId, @UserMessage String userMessage);
+    TokenStream chat(@MemoryId Long memoryId, @UserMessage String userMessage);
 }

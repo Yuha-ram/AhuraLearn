@@ -15,4 +15,8 @@ public class ChatSessionVO {
 
     @Schema(description = "Session Name")
     private String title;
+
+    // 修改：会话列表增加状态字段，便于前端感知失败会话。
+    @Schema(description = "Session Status")
+    private String status;
 }

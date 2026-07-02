@@ -57,9 +57,7 @@ public class CourseVectorSyncServiceImpl implements CourseVectorSyncService {
 
             // metadata
             Metadata metadata = new Metadata();
-            metadata.put("courseId", course.getId());
-            metadata.put("difficultyLevel", course.getDifficultyLevel());
-            metadata.put("categoryName", course.getCategoryName());
+            metadata.put("courseId", String.valueOf(course.getId()));
 
             segments.add(TextSegment.from(embeddingText, metadata));
         }

@@ -10,9 +10,10 @@ public class ChatMemoryConfig {
 
     @Bean
     public ChatMemoryProvider chatMemoryProvider(MysqlChatMemoryStore mysqlStore) {
+        // 【追问上下文增强】工具调用会占用多条 memory，12 条能更稳地保留最近推荐课程的 courseId 锚点。
         return memoryId -> MessageWindowChatMemory.builder()
                 .id(memoryId)
-                .maxMessages(6)
+                .maxMessages(12)
                 .chatMemoryStore(mysqlStore)
                 .build();
     }

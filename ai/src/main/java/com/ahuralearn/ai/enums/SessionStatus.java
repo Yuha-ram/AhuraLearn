@@ -13,12 +13,17 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SessionStatus implements BaseEnum {
-    ACTIVE(1, "active"),
     DELETED(0, "deleted"),
+    // 修改：pending 用于标记流式生成尚未完成的新会话。
+    ACTIVE(1, "active"),
+    PENDING(2, "pending"),
+    // 修改：failed 用于保留首次生成失败且需要排障的会话。
+    FAILED(3, "failed"),
     ;
 
     @EnumValue
-    @JsonValue
     private final Integer value;
+
+    @JsonValue
     private final String desc;
 }
