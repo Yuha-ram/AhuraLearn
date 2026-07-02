@@ -11,6 +11,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 // Global Response Interceptor
 @RestControllerAdvice(basePackages = "com.ahuralearn")
@@ -22,11 +23,22 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
     // false -> no interception | true -> interception
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return !Result.class.isAssignableFrom(returnType.getParameterType());
+        return !Result.class.isAssignableFrom(returnType.getParameterType())
+                && !SseEmitter.class.isAssignableFrom(returnType.getParameterType());
     }
 
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+    public Object beforeBodyWrite(Object body,
+                                  MethodParameter returnType,
+                                  MediaType selectedContentType,
+                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  ServerHttpRequest request,
+                                  ServerHttpResponse response) {
+        // 修改：SSE 响应必须直接透传，不能再包装为统一 Result。
+        if ((selectedContentType != null && MediaType.TEXT_EVENT_STREAM.includes(selectedContentType))
+                || body instanceof SseEmitter) {
+            return body;
+        }
 
         if (body instanceof Result) {
             return body;

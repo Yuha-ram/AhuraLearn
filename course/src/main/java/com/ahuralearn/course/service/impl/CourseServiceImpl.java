@@ -7,6 +7,7 @@ import com.ahuralearn.common.utils.BeanUtils;
 import com.ahuralearn.common.utils.CollUtils;
 import com.ahuralearn.common.utils.StringUtils;
 import com.ahuralearn.common.utils.TimeUtils;
+import com.ahuralearn.course.domain.dto.CourseVectorDTO;
 import com.ahuralearn.course.domain.po.Course;
 import com.ahuralearn.course.domain.po.CourseSection;
 import com.ahuralearn.course.domain.query.CoursePageQuery;
@@ -265,5 +266,30 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         } catch (MalformedURLException e) {
             throw new BusinessException("Invalid video URL format stored in database");
         }
+    }
+
+    @Override
+    public List<CourseVectorDTO> getCourseMetadata() {
+        List<Course> courses = lambdaQuery()
+                .eq(Course::getStatus, CourseStatus.PUBLISHED)
+                .list();
+        if (CollUtils.isEmpty(courses))
+            return CollUtils.emptyList();
+
+        // Special handling for difficulty level & categoryName
+        Set<Long> categoryIds = courses.stream().map(Course::getCategoryId).collect(Collectors.toSet());
+        Map<Long, String> categoryMap = new HashMap<>(categoryIds.size());
+        if (CollUtils.isNotEmpty(categoryIds)) {
+            categoryMap = categoryService.getCategoryNamesByIds(categoryIds);
+        }
+
+        ArrayList<CourseVectorDTO> dtos = new ArrayList<>(courses.size());
+        for (Course course : courses) {
+            CourseVectorDTO dto = BeanUtils.copyBean(course, CourseVectorDTO.class);
+            dto.setDifficultyLevel(course.getDifficultyLevel().getValue());
+            dto.setCategoryName(categoryMap.getOrDefault(course.getCategoryId(), "Uncategorized"));
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }

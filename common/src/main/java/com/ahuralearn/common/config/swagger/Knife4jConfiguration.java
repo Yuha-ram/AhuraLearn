@@ -72,9 +72,11 @@ public class Knife4jConfiguration {
                 .build();
     }
 
-    // 如果后续 AhuraLearn 增加了“AI问答服务”，可以再加一个 Bean 分组：
-    // @Bean
-    // public GroupedOpenApi aiApi() {
-    //     return GroupedOpenApi.builder().group("AI智能服务").pathsToMatch("/ai/**").build();
-    // }
+    @Bean
+    public GroupedOpenApi aiApi() {
+        return GroupedOpenApi.builder()
+                .group("AI Module")
+                .packagesToScan("com.ahuralearn.ai.controller")
+                .build();
+    }
 }

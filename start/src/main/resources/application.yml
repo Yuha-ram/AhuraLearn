@@ -32,7 +32,7 @@ knife4j:
   enable: true
   setting:
     language: en
-#    language: zh_cn
+
 ahuralearn:
   oss:
     default-avatar: user/avatar/defaultAvatar.jpg
@@ -41,3 +41,16 @@ ahuralearn:
     access-key-id: # change to your own AccessKeyID
     access-key-secret: # change to your own AccessKeySecret
     url-prefix: https://ahuralearn.oss-ap-southeast-3.aliyuncs.com/
+
+langchain4j:
+  community:
+    dashscope:
+      chat-model:
+        model-name: qwen3.7-plus
+        api-key: # change to your own api key
+      embedding-model:
+        model-name: text-embedding-v4
+        api-key: # change to your own api key
+      streaming-chat-model:
+        model-name: qwen3.7-plus
+        api-key: # change to your own api key
