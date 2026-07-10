@@ -76,16 +76,6 @@ public class CourseChatServiceImpl implements ICourseChatService {
         }).collect(Collectors.toList());
     }
 
-//    private ChatMessageVO toChatMessageVO(ChatMessage message) {
-//        ChatMessageVO vo = new ChatMessageVO();
-//        vo.setMessageId(message.getId());
-//        vo.setRole(message.getRole().getDesc());
-//        vo.setMessageType(message.getMessageType().getDesc());
-//        vo.setContent(message.getContent());
-//        vo.setPayload(readPayload(message.getPayloadJson()));
-//        return vo;
-//    }
-
     private JsonNode readPayload(String payloadJson) {
         if (payloadJson == null || payloadJson.isBlank()) {
             return null;

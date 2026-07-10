@@ -44,6 +44,7 @@ public class ChatMessageServiceImpl extends ServiceImpl<ChatMessageMapper, ChatM
     }
 
     @Override
+    // TODO 可以考虑删除
     public List<ChatMessageBasicDTO> getRecentMessages(Long sessionId) {
         // 修改：memory 只读取可参与对话上下文的文本消息，不读取课程卡片消息。
         Page<ChatMessage> page = lambdaQuery()

@@ -120,16 +120,20 @@ public class CourseChatOrchestrator {
         if (streamContext.isClosed()) {
             return;
         }
+        // 修改: getter 内部已从 assistantBlocks 推导数据；此处只读取一次，避免日志和兜底重复遍历块序列。
+        String introText = streamContext.getIntroText();
+        String reasonText = streamContext.getReasonText();
+        int courseCardCount = streamContext.getCourseCards().size();
         String finalReply = StringUtils.blankToDefault(
                 fullAssistantReply,
-                streamContext.getIntroText() + "\n" + streamContext.getReasonText()
+                introText + "\n" + reasonText
         ).trim();
         try {
             log.info("AI chat stream completed. sessionId={}, introText={}, courseCardCount={}, reasonText={}, fullAssistantReply={}",
                     sessionId,
-                    sanitizeForLog(streamContext.getIntroText()),
-                    streamContext.getCourseCards().size(),
-                    sanitizeForLog(streamContext.getReasonText()),
+                    sanitizeForLog(introText),
+                    courseCardCount,
+                    sanitizeForLog(reasonText),
                     sanitizeForLog(finalReply));
             chatHistoryPersistenceService.persistCompletedRound(
                     sessionId,

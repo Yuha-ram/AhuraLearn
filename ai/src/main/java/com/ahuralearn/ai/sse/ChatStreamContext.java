@@ -16,12 +16,8 @@ public class ChatStreamContext {
 
     private final Long sessionId;
     private final SseEmitter emitter;
-    private final StringBuilder introBuffer = new StringBuilder();
-    private final StringBuilder reasonBuffer = new StringBuilder();
-    private final List<CourseCardPayloadVO> courseCards = new ArrayList<>();
     private final List<ChatStreamBlock> assistantBlocks = new ArrayList<>();
     private final AtomicBoolean closed = new AtomicBoolean(false);
-    private volatile boolean courseCardSent;
 
     public ChatStreamContext(Long sessionId, SseEmitter emitter) {
         this.sessionId = sessionId;
@@ -40,11 +36,6 @@ public class ChatStreamContext {
         if (token == null) {
             return;
         }
-        if (courseCardSent) {
-            reasonBuffer.append(token);
-        } else {
-            introBuffer.append(token);
-        }
 
         ChatStreamBlock lastBlock = assistantBlocks.isEmpty() ? null : assistantBlocks.get(assistantBlocks.size() - 1);
         if (lastBlock != null && lastBlock.getMessageType() == ChatMessageType.TEXT) {
@@ -55,20 +46,24 @@ public class ChatStreamContext {
     }
 
     public synchronized void addCourseCard(CourseCardPayloadVO courseCard) {
-        courseCards.add(courseCard);
         assistantBlocks.add(ChatStreamBlock.courseCard(courseCard));
-        courseCardSent = true;
     }
 
-    public String getIntroText() {
-        return introBuffer.toString().trim();
+    public synchronized String getIntroText() {
+        return collectTextBlocksBeforeFirstCourseCard().trim();
     }
 
-    public String getReasonText() {
-        return reasonBuffer.toString().trim();
+    public synchronized String getReasonText() {
+        return collectTextBlocksAfterFirstCourseCard().trim();
     }
 
-    public List<CourseCardPayloadVO> getCourseCards() {
+    public synchronized List<CourseCardPayloadVO> getCourseCards() {
+        List<CourseCardPayloadVO> courseCards = new ArrayList<>();
+        for (ChatStreamBlock block : assistantBlocks) {
+            if (block.getMessageType() == ChatMessageType.COURSE_CARD) {
+                courseCards.add(block.getCourseCardPayload());
+            }
+        }
         return Collections.unmodifiableList(courseCards);
     }
 
@@ -80,8 +75,40 @@ public class ChatStreamContext {
         return blocks;
     }
 
-    public boolean hasCourseCards() {
-        return !courseCards.isEmpty();
+    public synchronized boolean hasCourseCards() {
+        return assistantBlocks.stream().anyMatch(block -> block.getMessageType() == ChatMessageType.COURSE_CARD);
+    }
+
+    private String collectTextBlocksBeforeFirstCourseCard() {
+        StringBuilder text = new StringBuilder();
+        for (ChatStreamBlock block : assistantBlocks) {
+            if (block.getMessageType() == ChatMessageType.COURSE_CARD) {
+                break;
+            }
+            appendTextBlock(text, block);
+        }
+        return text.toString();
+    }
+
+    private String collectTextBlocksAfterFirstCourseCard() {
+        StringBuilder text = new StringBuilder();
+        boolean firstCourseCardFound = false;
+        for (ChatStreamBlock block : assistantBlocks) {
+            if (block.getMessageType() == ChatMessageType.COURSE_CARD) {
+                firstCourseCardFound = true;
+                continue;
+            }
+            if (firstCourseCardFound) {
+                appendTextBlock(text, block);
+            }
+        }
+        return text.toString();
+    }
+
+    private void appendTextBlock(StringBuilder target, ChatStreamBlock block) {
+        if (block.getMessageType() == ChatMessageType.TEXT && block.getContent() != null) {
+            target.append(block.getContent());
+        }
     }
 
     public boolean isClosed() {

@@ -23,6 +23,7 @@ public class SseEventPublisher {
     }
 
     public void publishText(SseEmitter emitter, String token) throws Exception {
+        // 与前端商议好的协议
         String safeToken = token.replace("\n", "\\n");
         emitter.send(SseEmitter.event()
                 .name(SseEventNames.TEXT)

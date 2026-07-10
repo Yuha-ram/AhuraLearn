@@ -2,6 +2,7 @@ package com.ahuralearn.ai.service;
 
 import com.ahuralearn.ai.domain.po.ChatSession;
 import com.ahuralearn.ai.domain.vo.ChatSessionVO;
+import com.ahuralearn.ai.enums.SessionStatus;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface IChatSessionService extends IService<ChatSession> {
     void updateSessionTitle(Long sessionId, String title);
 
     // 修改：会话状态更新独立暴露，便于编排层显式管理 pending/active/failed。
-    void updateSessionStatus(Long sessionId, com.ahuralearn.ai.enums.SessionStatus status);
+    void updateSessionStatus(Long sessionId, SessionStatus status);
 
     List<ChatSession> getHistorySessions();
 }
