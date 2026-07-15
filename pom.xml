@@ -23,6 +23,7 @@
         <module>learning</module>
         <module>media</module>
         <module>ai</module>
+        <module>assistant</module>
     </modules>
 
     <packaging>pom</packaging>

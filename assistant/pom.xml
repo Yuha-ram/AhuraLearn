@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ahuralearn</groupId>
+        <artifactId>AhuraLearn</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <!-- Academic Assistant business module (reads documents from the file module) -->
+    <artifactId>assistant</artifactId>
+
+    <dependencies>
+        <!-- File entity + IFileService + FileAnalyzer live in the media module
+             (Java package com.ahuralearn.file, but the Maven artifactId is 'media') -->
+        <dependency>
+            <groupId>com.ahuralearn</groupId>
+            <artifactId>media</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+        <!-- LangChain4j ChatModel comes transitively via the media module's
+             langchain4j-community-dashscope-spring-boot-starter -->
+    </dependencies>
+</project>

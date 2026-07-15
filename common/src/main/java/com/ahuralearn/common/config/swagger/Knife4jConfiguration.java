@@ -34,9 +34,10 @@ public class Knife4jConfiguration {
         return GroupedOpenApi.builder()
                 .group("User Module")
                 // 指定要扫描的 Controller 所在的包路径，请替换为你实际的包名
-                .packagesToScan("com.ahuralearn.user.controller")
+                // profile 包是 My Information 页面的接口，也属于 user 模块
+                .packagesToScan("com.ahuralearn.user.controller", "com.ahuralearn.profile.controller")
                 // 也可以按路径匹配扫描，例如只扫描 /user/** 的接口
-                // .pathsToMatch("/user/**") 
+                // .pathsToMatch("/user/**")
                 .build();
     }
 
@@ -67,8 +68,17 @@ public class Knife4jConfiguration {
     @Bean
     public GroupedOpenApi mediaApi() {
         return GroupedOpenApi.builder()
-                .group("Learning Module")
-                .packagesToScan("com.ahuralearn.media.controller")
+                .group("Media Module")
+                // file 包是文档上传 / AI 摘要的接口，和 media 同属一个模块
+                .packagesToScan("com.ahuralearn.media.controller", "com.ahuralearn.file.controller")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi assistantApi() {
+        return GroupedOpenApi.builder()
+                .group("Assistant Module")
+                .packagesToScan("com.ahuralearn.assistant.controller")
                 .build();
     }
 

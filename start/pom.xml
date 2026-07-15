@@ -63,6 +63,13 @@
             <version>1.0.0</version>
         </dependency>
 
+        <!-- Added academic/document assistant module. -->
+        <dependency>
+            <groupId>com.ahuralearn</groupId>
+            <artifactId>assistant</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
