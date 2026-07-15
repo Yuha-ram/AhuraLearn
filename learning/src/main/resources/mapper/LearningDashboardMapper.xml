@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ahuralearn.learning.mapper.LearningDashboardMapper">
+    <select id="countCoursesByStatus" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM learning_lesson
+        WHERE user_id = #{userId}
+          AND status = #{status}
+    </select>
+
+    <select id="selectAchievementCounts"
+            resultType="com.ahuralearn.learning.domain.vo.DashboardAchievementCountsVO">
+        SELECT
+            (
+                SELECT COUNT(*)
+                FROM weekly_goal wg
+                WHERE wg.user_id = #{userId}
+                  AND wg.achieved = 1
+            ) AS achievements,
+            (
+                SELECT COUNT(DISTINCT ll.course_id)
+                FROM learning_lesson ll
+                JOIN (
+                    SELECT user_id, course_id, MAX(accuracy) AS max_accuracy
+                    FROM assessment_record
+                    WHERE user_id = #{userId}
+                    GROUP BY user_id, course_id
+                ) ar ON ar.user_id = ll.user_id
+                    AND ar.course_id = ll.course_id
+                WHERE ll.user_id = #{userId}
+                  AND ll.status = 2
+                  AND ar.max_accuracy >= 0.8
+            ) AS certificates
+    </select>
+
+    <select id="selectOverallProgress" resultType="java.lang.Integer">
+        SELECT CASE
+                   WHEN COALESCE(SUM(cs.total_sections), 0) = 0 THEN 0
+                   ELSE FLOOR(COALESCE(SUM(ll.learned_sections), 0) * 100
+                              / SUM(cs.total_sections))
+               END
+        FROM learning_lesson ll
+        JOIN course c ON ll.course_id = c.id
+        LEFT JOIN (
+            SELECT course_id, COUNT(id) AS total_sections
+            FROM course_section
+            GROUP BY course_id
+        ) cs ON c.id = cs.course_id
+        WHERE ll.user_id = #{userId}
+    </select>
+
+    <select id="selectLatestOngoingCourses"
+            resultType="com.ahuralearn.learning.domain.vo.LearningCourseCardVO">
+        SELECT c.id,
+               c.name AS title,
+               NULL AS subtitle,
+               i.name AS instructor,
+               c.cover_url AS image,
+               c.rating,
+               c.review_count AS reviewCount,
+               COALESCE(ll.learned_sections, 0) AS learnedSections,
+               COALESCE(cs.total_sections, 0) AS totalSections,
+               CASE
+                   WHEN COALESCE(cs.total_sections, 0) = 0 THEN 0
+                   ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / cs.total_sections)
+               END AS progress,
+               'IN_PROGRESS' AS status,
+               ll.latest_section_id AS latestSectionId
+        FROM learning_lesson ll
+        JOIN course c ON ll.course_id = c.id
+        LEFT JOIN instructor i ON c.instructor_id = i.id
+        LEFT JOIN (
+            SELECT course_id, COUNT(id) AS total_sections
+            FROM course_section
+            GROUP BY course_id
+        ) cs ON c.id = cs.course_id
+        WHERE ll.user_id = #{userId}
+          AND ll.status = 1
+        ORDER BY ll.latest_learn_time DESC, ll.id DESC
+        LIMIT 2
+    </select>
+</mapper>
