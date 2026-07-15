@@ -8,17 +8,21 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
  * <p>
  * User table
  * </p>
- * The "My Information" page now lives on the shared {@code user} table (one table,
+ * The "My Information" page lives on the shared {@code user} table (one table,
  * like the boss's repo) instead of a separate {@code user_profile} table. This
  * entity is the profile module's view of that table: it maps the identity columns
  * it displays ({@code username}, {@code email}, {@code avatar}, {@code bio}) plus
- * the extended page fields it owns (name, headline, age … skills).
+ * the extended page fields it owns (title, age … skills). Since the consolidated
+ * table (2026-07-15) there is no separate display name — {@code username} doubles
+ * as the name shown on the page — and {@code age}/{@code birthday} are typed
+ * columns (TINYINT / DATE) instead of free text.
  * <p>
  * Auth-only columns ({@code password}, {@code role}, {@code status},
  * {@code last_login_time}) exist on the table but are <b>managed by the auth
@@ -43,7 +47,7 @@ public class User implements Serializable {
     private Long id;
 
     /**
-     * login name — owned by the auth module, shown read-only on the page
+     * login name — unique; also the display name shown on the profile
      */
     private String username;
 
@@ -53,14 +57,9 @@ public class User implements Serializable {
     private String email;
 
     /**
-     * display name shown on the profile, e.g. "Alex Rivera"
+     * professional title / role line, e.g. "Frontend & AI Learner"
      */
-    private String name;
-
-    /**
-     * headline / role line, e.g. "Frontend & AI Learner"
-     */
-    private String headline;
+    private String title;
 
     /**
      * short about-me text
@@ -73,9 +72,9 @@ public class User implements Serializable {
     private String avatar;
 
     /**
-     * age shown on the page, kept as entered (e.g. "24")
+     * age shown on the page (TINYINT UNSIGNED in the table)
      */
-    private String age;
+    private Integer age;
 
     /**
      * gender label, e.g. "Female"
@@ -88,9 +87,9 @@ public class User implements Serializable {
     private String region;
 
     /**
-     * date of birth, shown as entered (e.g. "May 18, 2002")
+     * date of birth (DATE in the table; the page sends/receives ISO yyyy-MM-dd)
      */
-    private String birthday;
+    private LocalDate birthday;
 
     /**
      * highest education, e.g. "Bachelor of Science in Computer Science"

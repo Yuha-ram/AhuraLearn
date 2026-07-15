@@ -14,10 +14,10 @@ import lombok.Data;
 @Schema(description = "My Information update request")
 public class ProfileUpdateDTO {
 
-    /** display name */
+    /** display name — stored as the login {@code username} on the consolidated table */
     private String name;
 
-    /** headline / role line */
+    /** professional title / role line — stored in the {@code title} column */
     private String role;
 
     /** about-me text */
@@ -26,7 +26,7 @@ public class ProfileUpdateDTO {
     /** avatar image URL */
     private String avatar;
 
-    /** age shown on the page */
+    /** age shown on the page (numeric column; blank/non-numeric is stored as null) */
     private String age;
 
     /** gender label */
@@ -35,7 +35,7 @@ public class ProfileUpdateDTO {
     /** country or region */
     private String region;
 
-    /** birthday, as entered */
+    /** birthday, ISO yyyy-MM-dd (DATE column) */
     private String birthday;
 
     /** highest education */
