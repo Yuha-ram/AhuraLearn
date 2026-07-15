@@ -23,6 +23,8 @@
         <module>learning</module>
         <module>media</module>
         <module>ai</module>
+        <module>game</module>
+        <module>report</module>
     </modules>
 
     <packaging>pom</packaging>
