@@ -1,6 +1,7 @@
 package com.ahuralearn.learning.controller;
 
 import com.ahuralearn.common.domain.Result;
+import com.ahuralearn.common.utils.UserContext;
 import com.ahuralearn.learning.domain.vo.MyExamVO;
 import com.ahuralearn.learning.service.ExamService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class ExamController {
 
     @GetMapping("/api/v1/exam/my-exam")
     public Result<MyExamVO> getMyExam() {
-        Long userId = 1L;
+        Long userId = UserContext.getUser();
         return Result.success(examService.getMyExam(userId));
     }
 }

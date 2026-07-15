@@ -22,7 +22,7 @@
                     AND ar.course_id = ll.course_id
                 WHERE ll.user_id = #{userId}
                   AND ll.status = 2
-                  AND ar.max_accuracy >= 0.8
+                  AND ar.max_accuracy >= 80
             ) AS certificatesEarned,
             (
                 SELECT c.name
@@ -42,10 +42,10 @@
                     AND ar.course_id = ll.course_id
                 WHERE ll.user_id = #{userId}
                   AND c.status = 1
-                  AND NOT (ll.status = 2 AND COALESCE(ar.max_accuracy, 0) >= 0.8)
+                  AND NOT (ll.status = 2 AND COALESCE(ar.max_accuracy, 0) >= 80)
                 ORDER BY
                     CASE
-                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy * 100)
+                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy)
                         WHEN COALESCE(cs.total_sections, 0) = 0 THEN 0
                         ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / cs.total_sections)
                     END DESC,
@@ -56,7 +56,7 @@
             COALESCE((
                 SELECT
                     CASE
-                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy * 100)
+                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy)
                         WHEN COALESCE(cs.total_sections, 0) = 0 THEN 0
                         ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / cs.total_sections)
                     END
@@ -76,10 +76,10 @@
                     AND ar.course_id = ll.course_id
                 WHERE ll.user_id = #{userId}
                   AND c.status = 1
-                  AND NOT (ll.status = 2 AND COALESCE(ar.max_accuracy, 0) >= 0.8)
+                  AND NOT (ll.status = 2 AND COALESCE(ar.max_accuracy, 0) >= 80)
                 ORDER BY
                     CASE
-                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy * 100)
+                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy)
                         WHEN COALESCE(cs.total_sections, 0) = 0 THEN 0
                         ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / cs.total_sections)
                     END DESC,
