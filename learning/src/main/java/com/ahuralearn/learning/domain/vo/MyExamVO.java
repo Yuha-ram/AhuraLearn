@@ -40,7 +40,7 @@ public class MyExamVO {
     @Data
     public static class RecentExamVO {
 
-        private Long id;
+        private String id;
 
         private String courseName;
 

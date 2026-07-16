@@ -180,7 +180,7 @@ public class ExamServiceImpl implements ExamService {
                 .forEach(item -> {
                     Course course = courseMap.get(item.getCourseId());
                     MyExamVO.RecentExamVO recentExamVO = new MyExamVO.RecentExamVO();
-                    recentExamVO.setId(item.getId());
+                    recentExamVO.setId(String.valueOf(item.getId()));
                     recentExamVO.setCourseName(course.getName());
                     recentExamVO.setScore(scoreOf(item));
                     recentExamVO.setStatus(statusOf(item));
