@@ -27,6 +27,7 @@
         <module>report</module>
         <module>assistant</module>
         <module>adaptiveexam</module>
+        <module>adaptiveexam</module>
     </modules>
 
     <packaging>pom</packaging>
