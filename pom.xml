@@ -25,6 +25,7 @@
         <module>ai</module>
         <module>game</module>
         <module>report</module>
+        <module>adaptiveexam</module>
     </modules>
 
     <packaging>pom</packaging>
