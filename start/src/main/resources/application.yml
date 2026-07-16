@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/ahuralearn?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
-    password: 058524
+    password: Gxc@0882
   servlet:
     multipart:
       max-request-size: 200MB
@@ -38,8 +38,8 @@ ahuralearn:
     default-avatar: user/avatar/defaultAvatar.jpg
     endpoint: oss-ap-southeast-3.aliyuncs.com
     bucket-name: ahuralearn
-    access-key-id: # change to your own AccessKeyID
-    access-key-secret: # change to your own AccessKeySecret
+    access-key-id: LTAI5tAN7wYd3RGzzwQ67A64
+    access-key-secret: tsve4VRDuY08ZntIljViwoSGU1LvF4
     url-prefix: https://ahuralearn.oss-ap-southeast-3.aliyuncs.com/
 
 langchain4j:
@@ -47,10 +47,10 @@ langchain4j:
     dashscope:
       chat-model:
         model-name: qwen3.7-plus
-        api-key: # change to your own api key
+        api-key:  sk-ws-H.EDMEIDE.vQaB.MEYCIQDGirP_085ph1mVR3MOQWlfd_EfknDYsxIhpbIS_oy5ewIhAImiBDZJzZH6D2ka12oZZTrDrN_16EcZ6hoScuxuSPAl
       embedding-model:
         model-name: text-embedding-v4
-        api-key: # change to your own api key
+        api-key:  sk-ws-H.EDMEIDE.vQaB.MEYCIQDGirP_085ph1mVR3MOQWlfd_EfknDYsxIhpbIS_oy5ewIhAImiBDZJzZH6D2ka12oZZTrDrN_16EcZ6hoScuxuSPAl
       streaming-chat-model:
         model-name: qwen3.7-plus
-        api-key: # change to your own api key
+        api-key:  sk-ws-H.EDMEIDE.vQaB.MEYCIQDGirP_085ph1mVR3MOQWlfd_EfknDYsxIhpbIS_oy5ewIhAImiBDZJzZH6D2ka12oZZTrDrN_16EcZ6hoScuxuSPAl
