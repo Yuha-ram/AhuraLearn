@@ -41,7 +41,13 @@ public class AssessmentServiceImpl
     // user 表主键类型为 bigint，所以这里用 Long
     // =========================================================
 
-    private static final Long CURRENT_USER_ID = 1L;
+    private Long getCurrentUserId() {
+        Long userId = com.ahuralearn.common.utils.UserContext.getUser();
+        if (userId == null) {
+            throw new RuntimeException("User is not logged in");
+        }
+        return userId;
+    }
 
 
     @Autowired
@@ -393,7 +399,7 @@ public class AssessmentServiceImpl
         // 替换为真正登录用户 ID
 
         record.setUserId(
-                CURRENT_USER_ID
+                getCurrentUserId()
         );
 
 
@@ -408,7 +414,7 @@ public class AssessmentServiceImpl
 
 
         record.setCourseId(
-                null
+                dto.getCourseId()
         );
 
 
@@ -420,6 +426,10 @@ public class AssessmentServiceImpl
         // =====================================================
         // 后端自动计算并保存成绩
         // =====================================================
+
+        record.setStatus(
+                2
+        );
 
         record.setScore(
                 score
@@ -548,7 +558,7 @@ public class AssessmentServiceImpl
         List<AssessmentRecord> records =
                 assessmentMapper
                         .selectRecordsByUser(
-                                CURRENT_USER_ID
+                                getCurrentUserId()
                         );
 
 
@@ -702,7 +712,7 @@ public class AssessmentServiceImpl
         // -------------------------------------------------
 
         Double avgAccuracy =
-                assessmentMapper.selectAvgAccuracy(CURRENT_USER_ID);
+                assessmentMapper.selectAvgAccuracy(getCurrentUserId());
 
         double accuracyRate =
                 (avgAccuracy != null)
@@ -730,7 +740,7 @@ public class AssessmentServiceImpl
         // -------------------------------------------------
 
         Double avgSecsPerQ =
-                assessmentMapper.selectAvgTimePerQuestion(CURRENT_USER_ID);
+                assessmentMapper.selectAvgTimePerQuestion(getCurrentUserId());
 
         double speedRate = 0.0;
         String speedSubtitle = "No data yet";
@@ -769,7 +779,7 @@ public class AssessmentServiceImpl
         // -------------------------------------------------
 
         Double problemSolvingRate =
-                assessmentMapper.selectProblemSolvingRate(CURRENT_USER_ID);
+                assessmentMapper.selectProblemSolvingRate(getCurrentUserId());
 
         double psRate =
                 (problemSolvingRate != null)

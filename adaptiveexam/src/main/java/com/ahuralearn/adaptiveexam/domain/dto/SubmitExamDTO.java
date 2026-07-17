@@ -12,6 +12,8 @@ public class SubmitExamDTO {
     // q2 -> first
     private String moduleId;
 
+    private Long courseId;
+
     private Map<String, String> answers;
 
     private Map<String, String> shortAnswers;

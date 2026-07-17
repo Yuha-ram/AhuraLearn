@@ -50,10 +50,10 @@ public class QuestionServiceImpl
             poList = questionMapper.selectQuestionsByModule(moduleId);
         }
 
-        // 随机打乱并只取 5 题返回给前端
+        // 随机打乱并取最多 30 题返回给前端（供前端自适应抽题使用）
         Collections.shuffle(poList);
-        if (poList.size() > 5) {
-            poList = poList.subList(0, 5);
+        if (poList.size() > 30) {
+            poList = poList.subList(0, 30);
         }
 
         List<ExamQuestionVO> voList =

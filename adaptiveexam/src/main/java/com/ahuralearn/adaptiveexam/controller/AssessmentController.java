@@ -42,7 +42,7 @@ public class AssessmentController {
     //获取历史记录
     @GetMapping("/history")
     public java.util.List<com.ahuralearn.adaptiveexam.domain.po.AssessmentRecord> getHistory() {
-        Long currentUserId = 1L; // 模拟当前用户
+        Long currentUserId = com.ahuralearn.common.utils.UserContext.getUser(); // 获取真实当前用户
         return assessmentService.getHistory(currentUserId);
     }
 }
