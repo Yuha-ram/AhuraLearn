@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ahuralearn.learning.mapper.LearningAchievementMapper">
+    <select id="selectSummaryByUserId"
+            resultType="com.ahuralearn.learning.domain.vo.AchievementSummaryVO">
+        SELECT
+            (
+                SELECT COUNT(*)
+                FROM weekly_goal wg
+                WHERE wg.user_id = #{userId}
+                  AND wg.achieved = 1
+            ) AS totalAchievements,
+            (
+                SELECT COUNT(DISTINCT ll.course_id)
+                FROM learning_lesson ll
+                JOIN (
+                    SELECT user_id, course_id, MAX(accuracy) AS max_accuracy
+                    FROM assessment_record
+                    WHERE user_id = #{userId}
+                    GROUP BY user_id, course_id
+                ) ar ON ar.user_id = ll.user_id
+                    AND ar.course_id = ll.course_id
+                WHERE ll.user_id = #{userId}
+                  AND ll.status = 2
+                  AND ar.max_accuracy >= 80
+            ) AS certificatesEarned,
+            (
+                SELECT c.name
+                FROM learning_lesson ll
+                JOIN course c ON c.id = ll.course_id
+                LEFT JOIN (
+                    SELECT course_id, COUNT(*) AS total_sections
+                    FROM course_section
+                    GROUP BY course_id
+                ) cs ON cs.course_id = ll.course_id
+                LEFT JOIN (
+                    SELECT user_id, course_id, MAX(accuracy) AS max_accuracy
+                    FROM assessment_record
+                    WHERE user_id = #{userId}
+                    GROUP BY user_id, course_id
+                ) ar ON ar.user_id = ll.user_id
+                    AND ar.course_id = ll.course_id
+                WHERE ll.user_id = #{userId}
+                  AND c.status = 1
+                  AND NOT (ll.status = 2 AND COALESCE(ar.max_accuracy, 0) >= 80)
+                ORDER BY
+                    CASE
+                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy)
+                        WHEN COALESCE(cs.total_sections, 0) = 0 THEN 0
+                        ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / cs.total_sections)
+                    END DESC,
+                    ll.latest_learn_time DESC,
+                    ll.update_time DESC
+                LIMIT 1
+            ) AS certificationName,
+            COALESCE((
+                SELECT
+                    CASE
+                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy)
+                        WHEN COALESCE(cs.total_sections, 0) = 0 THEN 0
+                        ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / cs.total_sections)
+                    END
+                FROM learning_lesson ll
+                JOIN course c ON c.id = ll.course_id
+                LEFT JOIN (
+                    SELECT course_id, COUNT(*) AS total_sections
+                    FROM course_section
+                    GROUP BY course_id
+                ) cs ON cs.course_id = ll.course_id
+                LEFT JOIN (
+                    SELECT user_id, course_id, MAX(accuracy) AS max_accuracy
+                    FROM assessment_record
+                    WHERE user_id = #{userId}
+                    GROUP BY user_id, course_id
+                ) ar ON ar.user_id = ll.user_id
+                    AND ar.course_id = ll.course_id
+                WHERE ll.user_id = #{userId}
+                  AND c.status = 1
+                  AND NOT (ll.status = 2 AND COALESCE(ar.max_accuracy, 0) >= 80)
+                ORDER BY
+                    CASE
+                        WHEN ar.max_accuracy IS NOT NULL THEN FLOOR(ar.max_accuracy)
+                        WHEN COALESCE(cs.total_sections, 0) = 0 THEN 0
+                        ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / cs.total_sections)
+                    END DESC,
+                    ll.latest_learn_time DESC,
+                    ll.update_time DESC
+                LIMIT 1
+            ), 0) AS certificationProgress
+    </select>
+</mapper>

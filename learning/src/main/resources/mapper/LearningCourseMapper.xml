@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ahuralearn.learning.mapper.LearningCourseMapper">
+    <select id="selectUserCourses" resultType="com.ahuralearn.learning.domain.vo.LearningCourseCardVO">
+        SELECT c.id,
+               c.name AS title,
+               NULL AS subtitle,
+               i.name AS instructor,
+               c.cover_url AS image,
+               c.rating,
+               c.review_count AS reviewCount,
+               COALESCE(ll.learned_sections, 0) AS learnedSections,
+               COUNT(cs.id) AS total_sections,
+               CASE
+                   WHEN COUNT(cs.id) = 0 THEN 0
+                   ELSE FLOOR(COALESCE(ll.learned_sections, 0) * 100 / COUNT(cs.id))
+               END AS progress,
+               CASE ll.status
+                   WHEN 1 THEN 'IN_PROGRESS'
+                   WHEN 2 THEN 'COMPLETED'
+               END AS status,
+               ll.latest_section_id AS latestSectionId
+        FROM course c
+        JOIN learning_lesson ll ON c.id = ll.course_id
+        LEFT JOIN instructor i ON c.instructor_id = i.id
+        LEFT JOIN category ca ON c.category_id = ca.id
+        LEFT JOIN course_section cs ON c.id = cs.course_id
+        WHERE ll.user_id = #{userId}
+          AND c.status = 1
+        <if test="query.status == 'IN_PROGRESS'">
+          AND ll.status = 1
+        </if>
+        <if test="query.status == 'COMPLETED'">
+          AND ll.status = 2
+        </if>
+        GROUP BY c.id,
+                 c.name,
+                 i.name,
+                 c.cover_url,
+                 c.rating,
+                 c.review_count,
+                 ll.learned_sections,
+                 ll.status,
+                 ll.latest_section_id,
+                 ll.latest_learn_time,
+                 ll.update_time
+        ORDER BY ll.latest_learn_time DESC, ll.update_time DESC
+    </select>
+
+    <select id="countInProgressCourses" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM course c
+        JOIN learning_lesson ll ON c.id = ll.course_id
+        LEFT JOIN instructor i ON c.instructor_id = i.id
+        LEFT JOIN category ca ON c.category_id = ca.id
+        WHERE ll.user_id = #{userId}
+          AND c.status = 1
+          AND ll.status = 1
+    </select>
+
+    <select id="selectUserCourseCategories" resultType="com.ahuralearn.learning.domain.vo.LearningCourseCategoryVO">
+        SELECT ca.name,
+               ca.icon,
+               COUNT(*) AS count
+        FROM course c
+        JOIN learning_lesson ll ON c.id = ll.course_id
+        LEFT JOIN instructor i ON c.instructor_id = i.id
+        LEFT JOIN category ca ON c.category_id = ca.id
+        WHERE ll.user_id = #{userId}
+          AND c.status = 1
+        GROUP BY ca.id, ca.name, ca.icon
+        ORDER BY ca.name
+    </select>
+</mapper>

@@ -23,7 +23,11 @@
         <module>learning</module>
         <module>media</module>
         <module>ai</module>
+        <module>game</module>
+        <module>report</module>
         <module>assistant</module>
+        <module>adaptiveexam</module>
+        <module>adaptiveexam</module>
     </modules>
 
     <packaging>pom</packaging>

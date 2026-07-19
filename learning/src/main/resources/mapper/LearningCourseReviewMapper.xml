@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ahuralearn.learning.mapper.LearningCourseReviewMapper">
+    <update id="createTableIfNotExists">
+        CREATE TABLE IF NOT EXISTS course_review (
+            id BIGINT NOT NULL AUTO_INCREMENT,
+            course_id BIGINT NOT NULL,
+            user_id BIGINT NOT NULL,
+            rating TINYINT NOT NULL,
+            comment VARCHAR(500),
+            create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uk_user_course_review (user_id, course_id),
+            KEY idx_course_review_course_id (course_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    </update>
+
+    <select id="countCompletedUserCourseLearning" resultType="int">
+        SELECT COUNT(*)
+        FROM learning_lesson
+        WHERE user_id = #{userId}
+          AND course_id = #{courseId}
+          AND status = 2
+    </select>
+
+    <insert id="upsertReview">
+        INSERT INTO course_review (course_id, user_id, rating, comment)
+        VALUES (#{courseId}, #{userId}, #{dto.rating}, #{dto.comment})
+        ON DUPLICATE KEY UPDATE
+            rating = VALUES(rating),
+            comment = VALUES(comment),
+            update_time = CURRENT_TIMESTAMP
+    </insert>
+
+    <select id="selectUserReview" resultType="com.ahuralearn.learning.domain.vo.CourseReviewVO">
+        SELECT cr.id,
+               cr.course_id AS courseId,
+               cr.user_id AS userId,
+               cr.rating,
+               cr.comment,
+               u.username,
+               cr.create_time AS createTime
+        FROM course_review cr
+        LEFT JOIN `user` u ON cr.user_id = u.id
+        WHERE cr.user_id = #{userId}
+          AND cr.course_id = #{courseId}
+    </select>
+
+    <select id="selectCourseReviews" resultType="com.ahuralearn.learning.domain.vo.CourseReviewVO">
+        SELECT cr.id,
+               cr.course_id AS courseId,
+               cr.user_id AS userId,
+               cr.rating,
+               cr.comment,
+               u.username,
+               cr.create_time AS createTime
+        FROM course_review cr
+        LEFT JOIN `user` u ON cr.user_id = u.id
+        WHERE cr.course_id = #{courseId}
+        ORDER BY cr.create_time DESC, cr.id DESC
+    </select>
+
+    <update id="updateCourseReviewSummary">
+        UPDATE course c
+        SET c.rating = COALESCE((
+                SELECT AVG(cr.rating)
+                FROM course_review cr
+                WHERE cr.course_id = #{courseId}
+            ), 0),
+            c.review_count = (
+                SELECT COUNT(*)
+                FROM course_review cr
+                WHERE cr.course_id = #{courseId}
+            )
+        WHERE c.id = #{courseId}
+    </update>
+</mapper>

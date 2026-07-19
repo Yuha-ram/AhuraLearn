@@ -89,4 +89,20 @@ public class Knife4jConfiguration {
                 .packagesToScan("com.ahuralearn.ai.controller")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi gameApi() {
+        return GroupedOpenApi.builder()
+                .group("Game Module")
+                .packagesToScan("com.ahuralearn.game.controller")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi reportApi() {
+        return GroupedOpenApi.builder()
+                .group("Report Module")
+                .packagesToScan("com.ahuralearn.report.controller")
+                .build();
+    }
 }

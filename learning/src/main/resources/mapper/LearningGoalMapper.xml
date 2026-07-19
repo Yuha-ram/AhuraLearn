@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ahuralearn.learning.mapper.LearningGoalMapper">
+    <sql id="goalColumns">
+        id,
+        title,
+        type,
+        current_value AS currentValue,
+        total_value AS totalValue,
+        achieved,
+        achieved_day AS achievedDay,
+        due_day AS dueDay
+    </sql>
+
+    <select id="selectUserGoals" resultType="com.ahuralearn.learning.domain.vo.GoalVO">
+        SELECT <include refid="goalColumns"/>
+        FROM weekly_goal
+        WHERE user_id = #{userId}
+        ORDER BY update_time DESC, create_time DESC
+    </select>
+
+    <select id="selectUserGoal" resultType="com.ahuralearn.learning.domain.vo.GoalVO">
+        SELECT <include refid="goalColumns"/>
+        FROM weekly_goal
+        WHERE user_id = #{userId}
+          AND id = #{id}
+    </select>
+
+    <insert id="insertGoal" useGeneratedKeys="true" keyProperty="id" parameterType="com.ahuralearn.learning.domain.po.WeeklyGoal">
+        INSERT INTO weekly_goal
+            (user_id, title, type, current_value, total_value, achieved, achieved_day, due_day)
+        VALUES
+            (#{userId}, #{title}, #{type}, #{currentValue}, #{totalValue}, 0, NULL, #{dueDay})
+    </insert>
+
+    <update id="updateGoal">
+        UPDATE weekly_goal
+        SET title = #{dto.title},
+            type = #{dto.type},
+            current_value = #{dto.currentValue},
+            total_value = #{dto.totalValue},
+            due_day = #{dto.dueDay}
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </update>
+
+    <update id="updateGoalCompletion">
+        UPDATE weekly_goal
+        SET achieved = #{achieved},
+            current_value = #{currentValue},
+            achieved_day = #{achievedDay,jdbcType=VARCHAR}
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteGoal">
+        DELETE FROM weekly_goal
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </delete>
+</mapper>
